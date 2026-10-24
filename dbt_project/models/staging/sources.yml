@@ -1,0 +1,15 @@
+
+version: 2
+
+sources:
+  - name: pulsegrowth
+    description: Synthetic mobile marketing warehouse inputs
+    schema: main
+    tables:
+      - name: dim_campaigns
+      - name: fct_ad_spend
+      - name: fct_users
+      - name: fct_app_events
+      - name: fct_subscriptions
+      - name: fct_crm_experiments
+      - name: fct_geo_experiments

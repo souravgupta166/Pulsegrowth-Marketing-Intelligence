@@ -1,0 +1,123 @@
+
+version: 2
+
+models:
+  - name: mart_campaign_performance
+    description: >
+      Campaign-level marketing performance mart combining advertising spend,
+      impressions, clicks, attributed installs, paying customers, and attributed
+      subscription revenue. Each source is aggregated before joining to avoid
+      double-counting caused by one-to-many relationships.
+
+    columns:
+      - name: campaign_id
+        description: Unique campaign identifier.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: campaign_name
+        description: Human-readable campaign name.
+        data_tests:
+          - not_null
+
+      - name: channel
+        description: Advertising channel associated with the campaign.
+        data_tests:
+          - not_null
+
+      - name: spend_eur
+        description: Total advertising spend in euros.
+        data_tests:
+          - not_null
+
+      - name: impressions
+        description: Total advertising impressions.
+        data_tests:
+          - not_null
+
+      - name: clicks
+        description: Total advertising clicks.
+        data_tests:
+          - not_null
+
+      - name: attributed_installs
+        description: >
+          Number of installs assigned to the campaign in the synthetic
+          user attribution data.
+        data_tests:
+          - not_null
+
+      - name: paying_customers
+        description: >
+          Number of distinct attributed users with at least one initial
+          subscription transaction in the available dataset.
+        data_tests:
+          - not_null
+
+      - name: attributed_revenue_eur
+        description: >
+          Initial subscription revenue attributed to the campaign, in euros.
+          This is not profit or proven incremental revenue.
+        data_tests:
+          - not_null
+
+      - name: cpi_eur
+        description: >
+          Cost per attributed install, calculated as advertising spend divided
+          by attributed installs when the install count is greater than zero.
+
+      - name: cac_eur
+        description: >
+          Cost per attributed paying customer, calculated as advertising spend
+          divided by distinct attributed paying customers when the count is
+          greater than zero.
+
+      - name: attributed_roas
+        description: >
+          Attributed initial subscription revenue divided by advertising spend.
+          This does not account for refunds, operating costs, customer lifetime
+          value, or causal incrementality.
+
+  - name: mart_crm_experiment_results
+    description: >
+      Conversion counts and conversion rates for the simulated CRM experiment,
+      broken down by experiment, customer segment, and control or treatment
+      variant. Includes an ALL_SEGMENTS summary for each variant. All results
+      are based on synthetic data and do not represent a real CRM campaign.
+
+    columns:
+      - name: experiment_id
+        description: Identifier of the CRM experiment.
+        data_tests:
+          - not_null
+
+      - name: segment
+        description: Customer segment or ALL_SEGMENTS aggregate.
+        data_tests:
+          - not_null
+
+      - name: variant
+        description: Experiment assignment, either control or treatment.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - control
+                  - treatment
+
+      - name: assigned_users
+        description: Number of users assigned to the experiment group.
+        data_tests:
+          - not_null
+
+      - name: conversions
+        description: Number of users who converted within seven days.
+        data_tests:
+          - not_null
+
+      - name: conversion_rate
+        description: Conversion rate, calculated as conversions divided by assigned users.
+        data_tests:
+          - not_null

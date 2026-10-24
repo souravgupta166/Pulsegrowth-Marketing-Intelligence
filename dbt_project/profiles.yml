@@ -1,0 +1,9 @@
+
+pulsegrowth:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: data/processed/pulsegrowth.duckdb
+      schema: analytics
+      threads: 4
