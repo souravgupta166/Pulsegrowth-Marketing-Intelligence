@@ -1,428 +1,771 @@
 # PulseGrowth — Marketing Intelligence Platform
 
 > **Turning marketing data into better growth decisions.**
->
-> A portfolio project demonstrating marketing analytics, campaign performance measurement, customer acquisition efficiency, cohort retention, experimentation, and budget allocation through an interactive Streamlit dashboard.
 
-**Tech stack:** Python · SQL · DuckDB · dbt · Pandas · SciPy/statistical analysis · Streamlit · Pytest
+PulseGrowth is an end-to-end marketing analytics and decision-support platform that connects campaign acquisition, conversion, revenue attribution, customer retention, CRM experimentation, and budget planning in one interactive application.
 
-**Project type:** End-to-end marketing analytics and decision-support platform
+The project demonstrates how marketing data can be transformed into consistent KPIs, analytical data models, statistical evidence, and practical recommendations. It combines Python, SQL, DuckDB, dbt, statistical analysis, automated data validation, and Streamlit to create a reproducible marketing intelligence workflow.
 
-**Data:** Synthetic data generated for demonstration purposes
+**Live application:** [Open PulseGrowth Dashboard](https://pulsegrowth-marketing-intelligence-lrfpd5xacjdrrymdqzkqg9.streamlit.app/)
+
+**GitHub repository:** [souravgupta166/Pulsegrowth-Marketing-Intelligence](https://github.com/souravgupta166/Pulsegrowth-Marketing-Intelligence)
 
 ---
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Business Problem](#business-problem)
-3. [Project Objectives](#project-objectives)
-4. [Dashboard](#dashboard)
-5. [Architecture](#architecture)
-6. [Technology Stack](#technology-stack)
-7. [Data Model](#data-model)
-8. [Data Generation and Quality](#data-generation-and-quality)
-9. [Marketing KPI Framework](#marketing-kpi-framework)
-10. [Campaign Performance and Decision Logic](#campaign-performance-and-decision-logic)
-11. [Attribution Coverage](#attribution-coverage)
-12. [Cohort Retention Analysis](#cohort-retention-analysis)
-13. [CRM Experimentation and Statistical Significance](#crm-experimentation-and-statistical-significance)
-14. [Budget Simulator](#budget-simulator)
-15. [dbt Transformation and Testing](#dbt-transformation-and-testing)
-16. [Automated Testing](#automated-testing)
-17. [How to Run the Project](#how-to-run-the-project)
-18. [Project Structure](#project-structure)
-19. [Key Analytical Findings](#key-analytical-findings)
-20. [Limitations and Responsible Interpretation](#limitations-and-responsible-interpretation)
-21. [Future Improvements](#future-improvements)
-22. [Author](#author)
+1. [Executive Summary](#1-executive-summary)
+2. [Business Problem and Strategic Rationale](#2-business-problem-and-strategic-rationale)
+3. [Business Objectives](#3-business-objectives)
+4. [Live Dashboard and Features](#4-live-dashboard-and-features)
+5. [Technology Stack](#5-technology-stack)
+6. [System Architecture](#6-system-architecture)
+7. [Data Generation and Dataset Design](#7-data-generation-and-dataset-design)
+8. [Data Quality and Validation](#8-data-quality-and-validation)
+9. [Data Warehouse and Data Model](#9-data-warehouse-and-data-model)
+10. [Marketing KPI Framework and Mathematical Logic](#10-marketing-kpi-framework-and-mathematical-logic)
+11. [Campaign Performance and Decision Strategy](#11-campaign-performance-and-decision-strategy)
+12. [Attribution Coverage and Reliability](#12-attribution-coverage-and-reliability)
+13. [Cohort Retention Analysis](#13-cohort-retention-analysis)
+14. [CRM Experimentation and Statistical Analysis](#14-crm-experimentation-and-statistical-analysis)
+15. [Budget Simulator and Scenario Planning](#15-budget-simulator-and-scenario-planning)
+16. [dbt Transformation Strategy](#16-dbt-transformation-strategy)
+17. [Testing and Analytical Quality Assurance](#17-testing-and-analytical-quality-assurance)
+18. [Deployment and Performance Strategy](#18-deployment-and-performance-strategy)
+19. [End-to-End Setup Instructions](#19-end-to-end-setup-instructions)
+20. [Project Structure](#20-project-structure)
+21. [Key Findings from the Synthetic Dataset](#21-key-findings-from-the-synthetic-dataset)
+22. [Business Recommendations and Decision Framework](#22-business-recommendations-and-decision-framework)
+23. [Limitations and Responsible Interpretation](#23-limitations-and-responsible-interpretation)
+24. [Future Roadmap](#24-future-roadmap)
+25. [Skills Demonstrated](#25-skills-demonstrated)
+26. [Author](#26-author)
 
 ---
 
-## 1. Overview
+## 1. Executive Summary
 
-PulseGrowth is an interactive marketing intelligence platform designed to help a growth or marketing team understand campaign performance, evaluate customer acquisition efficiency, monitor retention, interpret CRM experiments, and explore potential budget allocation decisions.
+Marketing teams need to understand more than how many impressions, clicks, or installs a campaign generates. They need to know whether acquisition spending translates into paying customers, whether those customers remain active, whether marketing interventions improve conversion, and how budgets could be allocated more effectively.
 
-Instead of looking at advertising metrics in isolation, the platform connects acquisition, conversion, retention, and experimentation into a single analytical workflow.
+PulseGrowth addresses these questions through a unified analytical workflow.
 
-The project combines:
+The platform generates synthetic marketing and product data, validates the datasets, loads them into DuckDB, transforms them using SQL and dbt, calculates business KPIs, and presents the resulting insights through an interactive Streamlit dashboard.
 
-- A reproducible synthetic-data generation pipeline.
-- Automated data-quality validation.
-- A DuckDB analytical warehouse.
-- SQL transformations managed through dbt.
-- Python-based analytical workflows.
-- An interactive Streamlit dashboard.
-- Automated tests for core analytical logic.
+The analytical workflow covers five connected areas:
 
-The aim is to demonstrate how a Marketing Analyst can go beyond reporting numbers and use data to support practical business decisions.
+- **Acquisition efficiency:** Measure campaign spend, impressions, clicks, installs, customer acquisition cost, and attributed revenue.
+- **Campaign decision-making:** Compare channel and campaign performance and flag campaigns that need further investigation.
+- **Retention intelligence:** Evaluate Day 1, Day 7, and Day 30 retention across acquisition cohorts.
+- **Experimentation:** Compare CRM treatment and control groups using conversion rates, absolute lift, relative lift, confidence intervals, and statistical significance.
+- **Budget planning:** Explore alternative spending allocations using historical campaign performance and transparent assumptions.
 
-**Important:** All campaign, customer, revenue, retention, and experiment data in this project are synthetic. The results demonstrate the analytical methodology and functionality of the platform, not the performance of a real business.
+The project was built as a complete analytics workflow rather than a collection of independent charts. Each stage has a defined purpose, from data generation and validation to analytical transformation, business interpretation, and deployment.
 
-## 2. Business Problem
+### Project snapshot
 
-Marketing teams often work with information distributed across advertising platforms, product analytics, subscription systems, and customer relationship management tools.
+| Component | Implementation |
+|---|---|
+| Application | Streamlit |
+| Programming | Python |
+| Analytical database | DuckDB |
+| Transformation framework | dbt Core with dbt-duckdb |
+| Data processing | Pandas and SQL |
+| Statistical analysis | Hypothesis testing and confidence intervals |
+| Data quality | Python validation scripts and dbt tests |
+| Automated testing | Pytest |
+| Data type | Synthetic marketing and product analytics data |
+| Deployment | Streamlit Community Cloud |
 
-This creates several analytical challenges.
-
-### Acquisition efficiency
-
-Which channels and campaigns acquire users at a lower cost? Are those users progressing towards paid conversion?
-
-### Revenue efficiency
-
-How much attributed revenue is associated with each unit of advertising spend? Which campaigns require further investigation?
-
-### Customer retention
-
-Are acquired users returning after installation? How does retention change across acquisition cohorts and channels?
-
-### Experiment evaluation
-
-Does a CRM treatment appear to improve conversion compared with a control group, and is the observed difference statistically distinguishable from zero?
-
-### Budget allocation
-
-How could a marketing team explore different spend scenarios while understanding the assumptions behind the resulting projections?
-
-PulseGrowth addresses these questions through a unified data model and a dashboard designed around decision-making rather than disconnected metrics.
-
-## 3. Project Objectives
-
-The project was developed around six objectives:
-
-1. **Create a reproducible data pipeline** that generates realistic marketing, user, subscription, event, and experiment datasets.
-2. **Build a queryable analytical warehouse** using DuckDB and SQL.
-3. **Standardise marketing KPIs** so that calculations are consistent and reproducible.
-4. **Identify campaign-level performance differences** and translate them into review recommendations.
-5. **Evaluate retention and experimentation** using cohort metrics and statistical analysis.
-6. **Present the results through an interactive dashboard** that allows users to explore performance and potential decisions.
+**Important:** All users, campaigns, spending, conversions, subscriptions, revenue, and experiment outcomes are synthetic. The project demonstrates analytical methods and engineering practices; it does not report the actual performance of a real business.
 
 ---
 
-## 4. Dashboard
+## 2. Business Problem and Strategic Rationale
 
-The PulseGrowth dashboard is built with Streamlit and uses a dark visual theme with lime and cyan accents.
+Marketing data often exists across advertising platforms, product analytics systems, subscription databases, and customer relationship management tools. When these sources are analysed separately, it becomes difficult to connect acquisition costs with downstream customer behaviour.
 
-**Application:** [Open the PulseGrowth dashboard](#)
+PulseGrowth was designed around five business problems.
 
-Replace the placeholder link above with your deployed Streamlit URL when publishing the repository.
+### 2.1 Acquisition without downstream context
 
-### Executive Overview
+A campaign may generate a large number of inexpensive installs but attract users who never subscribe or return to the product.
 
-Provides a high-level view of marketing performance, including acquisition efficiency, attributed revenue, campaign performance, and key trends.
+Optimising exclusively for install volume can therefore lead to misleading conclusions.
 
-### Campaign Decision Centre
+**Strategic response:** Evaluate acquisition metrics alongside payer conversion, customer acquisition cost, attributed revenue, and retention.
 
-Allows users to compare campaign performance using spend, impressions, clicks, attributed installs, paying customers, customer acquisition cost, and attributed return on advertising spend.
+### 2.2 Revenue attribution without causal evidence
 
-### Cohort & Retention
+Attributed revenue helps connect customers with campaigns under a chosen attribution rule. However, attribution does not establish that advertising caused the revenue.
 
-Explores retention by acquisition month and channel, including Day 1, Day 7, and Day 30 retention metrics.
+Some customers might have converted without the campaign.
 
-### Experimentation Lab
+**Strategic response:** Separate descriptive campaign reporting from controlled experiments and incremental-effect measurement.
 
-Presents CRM experiment outcomes, conversion rates, treatment-versus-control comparisons, and statistical significance.
+### 2.3 Inconsistent KPI definitions
 
-### Budget Simulator
+Different reports can produce conflicting numbers when they use different aggregation levels, denominators, time windows, or definitions of a customer.
 
-Provides an interactive environment for exploring alternative budget allocations using campaign performance data and explicit assumptions.
+For example, averaging campaign-level CAC values does not generally produce the correct overall CAC.
 
-The simulator should be interpreted as a scenario-planning tool, not as a guarantee of future campaign outcomes.
+**Strategic response:** Define metrics explicitly, calculate them from the correct underlying counts, and centralise reusable transformations in the analytical warehouse.
+
+### 2.4 Retention metrics without maturity checks
+
+A recently acquired customer cannot yet be evaluated for Day 30 retention. Treating that customer as a non-retained user would distort the analysis.
+
+**Strategic response:** Separate eligible users from retained users and validate observation windows before interpreting retention rates.
+
+### 2.5 Budget decisions based on incomplete evidence
+
+Historical ROAS can help compare campaigns, but blindly moving budget towards the highest observed value can ignore audience saturation, uncertainty, customer quality, and changing marginal returns.
+
+**Strategic response:** Use a transparent decision framework that combines multiple metrics, explicit assumptions, and scenario analysis.
+
+### Strategic principle
+
+PulseGrowth follows a simple principle:
+
+> Measure acquisition, validate the data, understand customer behaviour, evaluate evidence, and only then consider a budget decision.
+
+The objective is not to automate every decision. It is to make decisions more transparent, reproducible, and evidence-based.
 
 ---
 
-## 5. Architecture
+## 3. Business Objectives
 
-PulseGrowth follows a layered analytical architecture.
+The project was developed around the following objectives:
+
+1. Build a reproducible synthetic-data pipeline for marketing, user activity, subscriptions, and experiments.
+2. Establish an analytical warehouse that supports repeatable SQL queries and aggregations.
+3. Define a consistent KPI framework for acquisition, conversion, attributed revenue, and retention.
+4. Identify campaign-level performance differences and produce review recommendations.
+5. Evaluate customer retention using cohort-based metrics and eligibility checks.
+6. Analyse CRM experiments using treatment-control comparisons and statistical methods.
+7. Create an interactive budget-planning experience with explicit modelling assumptions.
+8. Test data quality and core analytical logic before presenting results.
+9. Deploy a compact analytical dataset so the dashboard does not need to load the entire raw warehouse at runtime.
+
+These objectives cover both business analysis and the supporting data engineering required to deliver reliable analytical outputs.
+
+---
+
+## 4. Live Dashboard and Features
+
+### Live application
+
+**[Launch PulseGrowth — Marketing Intelligence](https://pulsegrowth-marketing-intelligence-lrfpd5xacjdrrymdqzkqg9.streamlit.app/)**
+
+The application uses a dark interface with lime and cyan accents and is organised around five analytical workspaces.
+
+### 4.1 Executive Overview
+
+Purpose: provide a high-level view of marketing performance.
+
+The overview brings together headline KPIs and campaign trends so that a user can understand the overall acquisition picture before exploring individual campaigns.
+
+Business questions:
+
+- How much has been spent on acquisition?
+- How many users have been acquired?
+- How efficiently does spending translate into attributed customers and revenue?
+- Are campaign performance measures moving in the same direction?
+
+The overview acts as the entry point for the broader decision workflow.
+
+### 4.2 Campaign Decision Centre
+
+Purpose: compare campaigns and identify where further investigation is needed.
+
+The campaign analysis brings together advertising activity, acquisition, customer conversion, and attributed revenue.
+
+Relevant metrics include:
+
+- Advertising spend
+- Impressions and clicks
+- Click-through rate
+- Cost per click
+- Attributed installs
+- Cost per install
+- Paying customers
+- Campaign-level customer acquisition cost
+- Install-to-payer conversion
+- Attributed revenue
+- Attributed ROAS
+- Campaign recommendation labels
+
+The strategic focus is to distinguish campaigns that generate inexpensive traffic from those that generate more valuable downstream outcomes.
+
+### 4.3 Cohort & Retention
+
+Purpose: understand how acquired users behave after installation.
+
+The retention workspace compares cohorts by acquisition month and channel using Day 1, Day 7, and Day 30 measures.
+
+It supports questions such as:
+
+- Which acquisition cohorts retain users more effectively?
+- Does retention differ across channels?
+- Are recent cohorts mature enough to evaluate at a particular milestone?
+- Could strong acquisition metrics be hiding weak post-install behaviour?
+
+Retention is evaluated with eligibility-aware denominators rather than treating every acquired user as immediately eligible for every milestone.
+
+### 4.4 Experimentation Lab
+
+Purpose: evaluate CRM treatment and control outcomes.
+
+The experimentation workspace compares conversion rates across experiment groups and exposes the difference between observed lift and statistical evidence.
+
+The analysis includes:
+
+- Assigned users
+- Conversion counts
+- Conversion rates
+- Absolute conversion lift
+- Relative conversion lift
+- Confidence intervals
+- P-values and statistical significance
+- Segment-level comparisons
+
+The intention is to support disciplined experiment interpretation rather than relying only on a higher observed conversion rate.
+
+### 4.5 Budget Simulator
+
+Purpose: explore alternative budget allocations using historical performance as a reference.
+
+The simulator lets users investigate what different spending scenarios could imply under the selected historical-rate assumptions.
+
+It is a scenario-planning tool, not a promise that future campaign results will match historical performance.
+
+A proper budget decision should also consider marginal returns, profitability, uncertainty, retention, and operational constraints.
+
+---
+
+## 5. Technology Stack
+
+| Technology | Role in PulseGrowth |
+|---|---|
+| Python | Data generation, analytical scripts, validation, and application logic |
+| Pandas | Data manipulation, aggregation, and preparation |
+| SQL | Joins, filtering, grouping, KPI calculations, and transformations |
+| DuckDB | Embedded analytical database |
+| dbt Core | Reusable SQL models, data lineage, and transformation testing |
+| dbt-duckdb | Connects dbt transformations to DuckDB |
+| Streamlit | Interactive dashboard and application interface |
+| Pytest | Automated testing of analytical behaviour |
+| Statistical methods | Conversion comparisons, lift, confidence intervals, and significance testing |
+| Git and GitHub | Version control and source management |
+| Streamlit Community Cloud | Hosted dashboard deployment |
+
+### Why this combination?
+
+DuckDB supports analytical SQL without requiring a separate database server. dbt provides structure around transformations, while Python handles data generation and analytical logic.
+
+Streamlit makes the results accessible through a web interface, and automated tests provide a way to detect regressions in important calculations.
+
+The architecture is intentionally lightweight enough for a portfolio project while demonstrating patterns that are relevant to larger analytics systems.
+
+---
+
+## 6. System Architecture
+
+PulseGrowth separates the data pipeline from the dashboard presentation layer.
 
 ```text
-Synthetic Data Generation
-          |
-          v
-CSV Datasets
-          |
-          v
-Data Quality Validation
-          |
-          v
-DuckDB Analytical Warehouse
-          |
-          +----------------------+
-          |                      |
-          v                      v
-SQL / dbt Transformations   Python Analytics
-          |                      |
-          +-----------+----------+
-                      |
-                      v
-             Analytical Data Marts
-                      |
-                      v
-             Streamlit Dashboard
-                      |
-                      v
-          Marketing Decision Support
+                 SYNTHETIC DATA GENERATION
+                           |
+                           v
+                   SOURCE CSV DATASETS
+                           |
+                           v
+                  DATA QUALITY VALIDATION
+                           |
+                           v
+                    DUCKDB WAREHOUSE
+                           |
+                +----------+-----------+
+                |                      |
+                v                      v
+          SQL / dbt MODELS       PYTHON ANALYTICS
+                |                      |
+                +----------+-----------+
+                           |
+                           v
+                   ANALYTICAL DATA MARTS
+                           |
+                           v
+                 CAMPAIGN DECISION TABLE
+                           |
+                           v
+                  STREAMLIT DASHBOARD
+                           |
+                           v
+                 BUSINESS INTERPRETATION
+                           |
+                           v
+                MARKETING DECISION SUPPORT
 ```
 
-### Layer 1 — Data generation
+### Layer 1 — Synthetic data generation
 
-Python generates the synthetic source datasets using a reproducible random seed.
+Python generates the source datasets using a fixed random seed, making the data generation reproducible when the same code and environment are used.
 
-### Layer 2 — Data quality
+### Layer 2 — Data quality validation
 
-Validation checks test the generated data for expected structural and logical properties before analysis.
+The validation process checks expected structural and logical properties before downstream analysis.
 
-### Layer 3 — Warehouse
+This helps identify problems such as invalid records, missing expected fields, and violations of implemented data rules.
 
-DuckDB stores the data locally and supports analytical SQL queries without requiring a separate database server.
+### Layer 3 — Analytical warehouse
 
-### Layer 4 — Transformation
+DuckDB stores the source-oriented tables and supports SQL queries across advertising, acquisition, subscription, and experiment data.
 
-SQL and dbt organise source data into staging models and analytical marts.
+### Layer 4 — Transformations
 
-### Layer 5 — Analytics
+SQL and dbt transform source tables into staging models and analytical marts.
 
-Python scripts calculate campaign decision metrics, attribution coverage, and experiment statistics.
+This layer is responsible for creating consistent analytical datasets from multiple sources.
+
+### Layer 5 — Python analytics
+
+Python scripts build the campaign decision table, perform attribution diagnostics, and support experiment analysis.
 
 ### Layer 6 — Presentation
 
-Streamlit brings the analytical outputs together in an interactive dashboard.
+Streamlit loads the analytical outputs and presents them through five interactive workspaces.
 
-This separation makes the project easier to test, debug, extend, and reproduce.
+### Layer 7 — Decision support
 
----
-
-## 6. Technology Stack
-
-| Technology | Purpose |
-|---|---|
-| Python | Data generation, analytics, validation, and application logic |
-| Pandas | Data manipulation and analytical preparation |
-| DuckDB | Local analytical database and SQL execution |
-| SQL | Joins, aggregations, KPI calculations, and data transformations |
-| dbt Core | Staging models, analytical marts, and data tests |
-| Streamlit | Interactive dashboard |
-| Plotly / Streamlit charts | Interactive analytical visualisations, where used |
-| Pytest | Automated regression and logic testing |
-| SciPy / statistical methods | Statistical evaluation of CRM experiment results |
-
-The exact dependency versions should be taken from the project's dependency files when publishing the repository.
+The final layer translates metrics into investigation priorities and scenario comparisons. Business recommendations remain subject to interpretation and validation.
 
 ---
 
-## 7. Data Model
+## 7. Data Generation and Dataset Design
 
-The synthetic pipeline generates seven principal datasets.
+The project uses synthetic data to model the relationships found in a subscription-oriented digital product.
 
-| Dataset | Approximate rows | Purpose |
+The generator simulates advertising activity, user acquisition, product events, subscriptions, CRM experiments, and geographic experiment observations.
+
+### 7.1 Dataset inventory
+
+The recorded generation run produced the following datasets.
+
+| Dataset | Rows | Purpose |
 |---|---:|---|
-| `campaigns.csv` | 16 | Campaign definitions and budget metadata |
-| `ad_spend.csv` | 2,880 | Daily advertising spend, impressions, and clicks |
+| `campaigns.csv` | 16 | Campaign definitions and metadata |
+| `ad_spend.csv` | 2,880 | Daily spend, impressions, and clicks |
 | `users.csv` | 659,938 | User acquisition and attribution information |
-| `app_events.csv` | 2,743,172 | User activity events |
+| `app_events.csv` | 2,743,172 | Product activity events |
 | `subscriptions.csv` | 58,404 | Subscription and revenue transactions |
-| `crm_experiments.csv` | 395,963 | User-level CRM experiment assignments and outcomes |
-| `geo_experiments.csv` | 720 | Illustrative market-level experiment data |
+| `crm_experiments.csv` | 395,963 | CRM experiment assignments and outcomes |
+| `geo_experiments.csv` | 720 | Illustrative geographic experiment observations |
 
-The generated data cover **4 April 2026 to 30 September 2026**, using seed `42`.
+These figures describe the recorded generation run; they are not guaranteed to be identical if the generator changes.
 
-### Warehouse tables
+### 7.2 Campaign design
 
-The DuckDB warehouse contains source-oriented tables such as:
+The synthetic campaigns cover four acquisition channels:
 
-- `main.dim_campaigns`
-- `main.fct_ad_spend`
-- `main.fct_users`
-- `main.fct_app_events`
-- `main.fct_subscriptions`
-- `main.fct_crm_experiments`
-- `main.fct_geo_experiments`
+- Google Ads
+- Meta Ads
+- TikTok Ads
+- Apple Search Ads
 
-It also contains analytical tables, including:
+The generated campaign set contains 16 campaigns across channel and campaign-theme combinations.
 
-- `main.mart_campaign_performance`
-- `main.mart_daily_campaign_performance`
-- `main.mart_cohort_retention`
+Daily advertising records simulate spend and engagement measurements, providing the basis for campaign-level aggregation.
+
+### 7.3 User acquisition and attribution
+
+The user dataset connects acquired users to acquisition information and campaign attribution.
+
+The generator includes users whose acquisition channel is not identified. This is deliberate: it allows the platform to demonstrate attribution coverage and its effect on downstream reporting.
+
+### 7.4 Product activity
+
+The app-event dataset simulates user activity after acquisition.
+
+These events support retention analysis by recording whether users return and generate activity after installation.
+
+### 7.5 Subscription transactions
+
+The subscription dataset provides transaction-level revenue information for the campaign and conversion analyses.
+
+The attribution and aggregation logic determines how this revenue is associated with campaigns. It should not automatically be interpreted as incremental revenue.
+
+### 7.6 CRM experiments
+
+The CRM experiment dataset contains treatment/control assignments, segment information, and conversion outcomes.
+
+The analysis uses this information to compare conversion rates and estimate uncertainty around the observed difference.
+
+### 7.7 Geographic experiments
+
+The geographic dataset provides illustrative market-level experiment observations.
+
+It should be treated as a demonstration dataset unless a valid treatment design, comparison strategy, and causal estimation procedure have been independently established.
+
+### 7.8 Reproducibility and date range
+
+The recorded generation run used:
+
+- **Random seed:** `42`
+- **Start date:** 4 April 2026
+- **End date:** 30 September 2026
+
+A fixed random seed supports repeatable output for a given implementation. Changes to the generator or dependency environment can still affect results.
+
+---
+
+## 8. Data Quality and Validation
+
+Data quality is a core part of the workflow because incorrect joins, missing identifiers, or inconsistent records can distort marketing KPIs.
+
+The project includes a validation script:
+
+```powershell
+python src/ingestion/validate_data.py
+```
+
+The recorded validation run completed with **27 out of 27 checks passing**.
+
+This means the datasets passed the implemented checks. It does not prove that every synthetic assumption reflects real-world marketing behaviour.
+
+### Validation strategy
+
+The validation stage is intended to catch issues before analytical models are built.
+
+Relevant categories include:
+
+1. **Structural validity:** Required files and expected fields exist.
+2. **Data integrity:** Records follow the expected structure and data types.
+3. **Logical consistency:** Values satisfy the implemented rules.
+4. **Relationship checks:** Identifiers and relationships behave as expected.
+5. **Analytical readiness:** Source data can be processed by the warehouse and downstream models.
+
+The exact checks are defined in the validation implementation.
+
+### Why validation matters
+
+Suppose daily advertising spend is joined directly to multiple user events before aggregation. The same spend amount can be repeated across multiple joined rows, causing spend and revenue metrics to become inflated.
+
+A reliable pipeline must therefore validate both the data and the grain at which the data is joined.
+
+---
+
+## 9. Data Warehouse and Data Model
+
+The project uses DuckDB to store source-oriented tables and analytical marts.
+
+### 9.1 Source-oriented warehouse tables
+
+The full local warehouse contains tables including:
+
+| Table | Purpose |
+|---|---|
+| `main.dim_campaigns` | Campaign metadata |
+| `main.fct_ad_spend` | Advertising spend and engagement facts |
+| `main.fct_users` | User acquisition and attribution records |
+| `main.fct_app_events` | User activity events |
+| `main.fct_subscriptions` | Subscription and revenue records |
+| `main.fct_crm_experiments` | CRM experiment assignments and outcomes |
+| `main.fct_geo_experiments` | Geographic experiment observations |
+
+These tables support the broader analytical workflow and allow the source data to be examined directly.
+
+### 9.2 Analytical marts
+
+The warehouse also contains analytical outputs:
+
+| Table | Purpose |
+|---|---|
+| `main.mart_campaign_performance` | Campaign-level performance measures |
+| `main.mart_daily_campaign_performance` | Daily campaign trends |
+| `main.mart_cohort_retention` | Cohort retention counts and rates |
+| `analytics.mart_campaign_performance` | dbt campaign performance model consumed by the dashboard |
+| `analytics.mart_crm_experiment_results` | Aggregated CRM experiment results consumed by the dashboard |
+
+The `main` and `analytics` schemas contain distinct models. In particular, the two campaign performance marts should not be assumed to have identical columns or definitions.
+
+### 9.3 Grain and aggregation strategy
+
+The grain of a table describes what one row represents.
+
+For example:
+
+- An advertising fact may represent one campaign on one day.
+- A user fact represents one user.
+- An event fact represents an individual event.
+- A subscription fact represents a subscription transaction.
+- A daily campaign mart represents one campaign-day.
+- A campaign performance mart represents one campaign.
+
+Before joining datasets, their grains must be understood.
+
+A robust aggregation strategy is to:
+
+1. Aggregate spend to the required campaign or campaign-day grain.
+2. Aggregate acquisition outcomes to the corresponding campaign grain.
+3. Aggregate subscription revenue using the chosen attribution rule.
+4. Join the aggregated results on appropriate keys.
+5. Calculate ratios from the resulting counts and totals.
+
+This reduces the risk of duplicated spend, inflated revenue, and inconsistent campaign KPIs.
+
+### 9.4 Full warehouse versus deployment database
+
+The full local warehouse contains the raw and transformed data required for development and rebuilding the analytics.
+
+The deployed dashboard uses a smaller database, `data/processed/pulsegrowth_deploy.duckdb`, containing only the analytical tables required at runtime:
+
 - `analytics.mart_campaign_performance`
 - `analytics.mart_crm_experiment_results`
+- `main.mart_cohort_retention`
+- `main.mart_daily_campaign_performance`
+- `main.fct_geo_experiments`
 
-The `analytics` schema includes dbt staging models and transformed analytical outputs. The `main` schema contains the broader warehouse tables and marts.
+The compact database retains the required schema names and table structures while excluding the millions of raw event and user rows that the dashboard does not query directly.
 
-### Important modelling distinction
-
-The warehouse includes both `main.mart_campaign_performance` and `analytics.mart_campaign_performance`. Their schemas are not identical.
-
-For example, the `main` mart includes CTR, CPC, cost per attributed install, and install-to-payer conversion, while the dbt mart includes CPI, CAC, and attributed ROAS.
-
-These should be documented and maintained as distinct models until their definitions and intended uses have been explicitly reconciled.
+This separation improves deployment practicality without replacing the full local warehouse used for analysis.
 
 ---
 
-## 8. Data Generation and Quality
+## 10. Marketing KPI Framework and Mathematical Logic
 
-The project uses synthetic data to simulate the types of relationships found in a subscription-oriented digital product.
-
-The generation process includes:
-
-- Advertising campaigns across Google Ads, Meta Ads, TikTok Ads, and Apple Search Ads.
-- Daily advertising spend, impressions, and clicks.
-- User installs and campaign attribution.
-- Product activity events.
-- Subscription transactions.
-- CRM treatment and control assignments.
-- Illustrative geographic experiment observations.
-
-The generator also includes unattributed users, allowing the project to demonstrate the impact of incomplete attribution.
-
-### Reproducibility
-
-A fixed random seed of `42` supports repeatable data generation when the same code and environment are used.
-
-### Validation
-
-The data validation script reported **27 out of 27 checks passing**.
-
-This establishes that the generated datasets passed the implemented validation rules. It does not independently establish that every business assumption is realistic or that the data represent a real marketing environment.
-
----
-
-## 9. Marketing KPI Framework
-
-The platform uses a common set of marketing performance indicators.
+The KPI framework connects advertising activity to customer acquisition and attributed revenue.
 
 Let:
 
-- \(S\) = advertising spend.
-- \(I\) = impressions.
-- \(C\) = clicks.
-- \(A\) = attributed installs.
-- \(P\) = attributed paying customers.
-- \(R\) = revenue attributed to the campaign.
+- \(S\) = advertising spend
+- \(I\) = impressions
+- \(C\) = clicks
+- \(A\) = attributed installs
+- \(P\) = attributed paying customers
+- \(R\) = revenue attributed to the campaign
 
-### 9.1 Click-through rate (CTR)
+The formulas below describe the analytical definitions used in the project. The implementation in the Python and SQL files remains the source of truth for the exact fields, aggregation rules, and edge-case handling.
 
-Measures the proportion of impressions that generated clicks.
+### 10.1 Click-through rate (CTR)
 
-\[
-CTR=\frac{C}{I}\times100
-\]
-
-**Interpretation:** A higher CTR indicates that a greater proportion of impressions generated clicks. It does not, by itself, prove that the campaign acquires valuable customers.
-
-### 9.2 Cost per click (CPC)
-
-Measures the average advertising cost per click.
+CTR measures the proportion of impressions that generated clicks.
 
 \[
-CPC=\frac{S}{C}
+\text{CTR}=\frac{C}{I}\times100
 \]
 
-**Interpretation:** Lower CPC can improve acquisition efficiency, but only when downstream conversion quality remains acceptable.
-
-### 9.3 Cost per install (CPI)
-
-Measures advertising spend per attributed install.
+**Example:** If a campaign receives 20,000 impressions and 500 clicks:
 
 \[
-CPI=\frac{S}{A}
+\text{CTR}=\frac{500}{20,000}\times100=2.5\%
 \]
 
-**Interpretation:** CPI is useful for comparing acquisition costs, but it does not measure how many acquired users become paying customers.
+**Interpretation:** CTR measures engagement with an advertisement. It does not establish whether the resulting users become valuable customers.
 
-### 9.4 Customer acquisition cost (CAC)
+### 10.2 Cost per click (CPC)
 
-The campaign-level calculation used in this project is:
+CPC measures advertising cost per click.
 
 \[
-CAC=\frac{S}{P}
+\text{CPC}=\frac{S}{C}
 \]
 
-Here, \(P\) represents the paying customers attributed to the campaign.
+**Example:** If spend is €1,000 and clicks total 500:
 
-This is an advertising-spend-based acquisition cost. It is not necessarily the same as fully loaded business CAC, which may include agency fees, salaries, incentives, creative production, and other acquisition costs.
+\[
+\text{CPC}=\frac{1,000}{500}=€2
+\]
 
-### 9.5 Install-to-payer conversion rate
+A lower CPC can improve acquisition efficiency, but only if downstream conversion quality remains acceptable.
+
+### 10.3 Cost per install (CPI)
+
+CPI measures advertising spend per attributed install.
+
+\[
+\text{CPI}=\frac{S}{A}
+\]
+
+**Example:** If spend is €1,000 and the campaign generates 200 attributed installs:
+
+\[
+\text{CPI}=\frac{1,000}{200}=€5
+\]
+
+CPI is useful for evaluating install acquisition costs. It does not show how many acquired users become paying customers.
+
+### 10.4 Customer acquisition cost (CAC)
+
+The project uses an advertising-spend-based campaign CAC:
+
+\[
+\text{CAC}=\frac{S}{P}
+\]
+
+**Example:** If spend is €1,000 and 25 attributed customers pay:
+
+\[
+\text{CAC}=\frac{1,000}{25}=€40
+\]
+
+This is not necessarily fully loaded business CAC. A complete business CAC calculation may also include salaries, agency fees, creative production, incentives, and other acquisition expenses.
+
+### 10.5 Install-to-payer conversion rate
+
+This metric measures the proportion of attributed installs that become paying customers.
 
 \[
 \text{Install-to-payer rate}
 =\frac{P}{A}\times100
 \]
 
-**Interpretation:** This helps distinguish campaigns that generate many installs from campaigns that generate paying customers.
-
-### 9.6 Attributed revenue
-
-Attributed revenue is the revenue associated with users assigned to a campaign under the project's attribution logic.
-
-It is not automatically incremental revenue. Revenue could have occurred without the advertising campaign.
-
-### 9.7 Attributed return on advertising spend (ROAS)
+**Example:** If 25 of 200 attributed installs become paying customers:
 
 \[
-\text{Attributed ROAS}=\frac{R}{S}
+\text{Conversion rate}=\frac{25}{200}\times100=12.5\%
 \]
 
-For example, a ROAS of \(0.60\times\) means that the attributed revenue recorded by the model is €0.60 for each €1 of advertising spend.
+This helps distinguish campaigns that generate inexpensive installs from those that generate paying customers.
 
-It does **not** mean the business earned €0.60 in profit, and it does not prove that the advertising caused the revenue.
+### 10.6 Attributed revenue
 
-### Calculation safeguards
+Attributed revenue is the revenue assigned to a campaign under the project's attribution logic.
 
-Ratios require sensible handling of zero denominators. When spend, impressions, clicks, installs, or paying customers are zero, the implementation should return a null or clearly defined fallback rather than presenting an invalid ratio as a real result.
+It connects revenue transactions to acquisition reporting but does not establish that the campaign caused the revenue.
 
-Metric definitions should also be consistent across the dashboard, Python scripts, and dbt models.
+The result depends on the attribution rules, revenue window, transaction definitions, and join logic.
+
+### 10.7 Attributed return on advertising spend (ROAS)
+
+ROAS compares attributed revenue with advertising spend.
+
+\[
+\text{ROAS}=\frac{R}{S}
+\]
+
+**Example:** If a campaign records €600 in attributed revenue from €1,000 in spend:
+
+\[
+\text{ROAS}=\frac{600}{1,000}=0.60\times
+\]
+
+This means the model attributes €0.60 of revenue to every €1 of advertising spend.
+
+It does **not** mean the campaign generated €0.60 of profit per euro spent. Profitability depends on contribution margin, refunds, payment fees, retention, operating costs, and the period over which revenue is measured.
+
+### 10.8 Aggregation and denominator safeguards
+
+Ratios should be calculated from the appropriate underlying totals rather than by blindly averaging already-calculated percentages.
+
+For example, the overall CTR should be:
+
+\[
+\text{Overall CTR}
+=\frac{\sum_i C_i}{\sum_i I_i}\times100
+\]
+
+It should not generally be calculated as a simple average of campaign CTRs.
+
+Similarly:
+
+\[
+\text{Overall CAC}
+=\frac{\sum_i S_i}{\sum_i P_i}
+\]
+
+and:
+
+\[
+\text{Overall ROAS}
+=\frac{\sum_i R_i}{\sum_i S_i}
+\]
+
+These formulas weight campaigns according to their underlying volumes.
+
+If a denominator is zero, the implementation should use an explicitly defined null or fallback rather than presenting an invalid ratio as a meaningful result.
 
 ---
 
-## 10. Campaign Performance and Decision Logic
+## 11. Campaign Performance and Decision Strategy
 
-The campaign decision table combines acquisition, engagement, conversion, and attributed revenue metrics.
+The Campaign Decision Centre turns the KPI framework into a structured campaign review process.
 
-The resulting dataset includes:
+The objective is not simply to rank campaigns. It is to identify what should be investigated and why.
 
-- Performance rank.
-- Campaign and channel.
-- Spend and impressions.
-- Clicks and CTR.
-- Attributed installs and CPI.
-- Paying customers and CAC.
-- Install-to-payer conversion.
-- Attributed revenue and revenue per install.
-- Attributed ROAS.
-- A recommendation label.
+### 11.1 Multi-metric assessment
 
-### Decision framework
+The decision table combines measures from different stages of the customer journey.
 
-The project's initial recommendation logic uses ROAS and engagement efficiency as screening signals.
+| Analytical dimension | Measures | Business question |
+|---|---|---|
+| Advertising engagement | CTR, CPC | Are impressions generating clicks efficiently? |
+| Acquisition | Installs, CPI | What does it cost to acquire an install? |
+| Conversion | Paying customers, CAC, install-to-payer rate | Are acquired users becoming paying customers? |
+| Revenue efficiency | Attributed revenue, ROAS | How much attributed revenue is recorded relative to spend? |
+| Data reliability | Attribution coverage | How complete is campaign attribution? |
+| Retention | D1, D7, D30 retention | Do acquired users continue to engage? |
+
+A campaign can perform well on one dimension and poorly on another. A low CPI, for example, does not guarantee a low CAC if few acquired users convert to paying customers.
+
+### 11.2 Initial decision thresholds
+
+The project's documented screening logic uses the following ROAS thresholds:
 
 | Condition | Initial interpretation |
 |---|---|
-| Attributed ROAS at or above 1.0x | Promising for further evaluation |
+| Attributed ROAS at or above 1.0x | Promising enough for further evaluation |
 | Attributed ROAS below 0.5x | Review campaign efficiency and economics |
-| Other campaigns | Monitor performance and examine supporting metrics |
+| Between the thresholds | Monitor and examine supporting metrics |
 
-These are **portfolio-project screening thresholds**, not universal marketing benchmarks.
+These are project-specific screening thresholds, not universal marketing benchmarks.
 
-A campaign with ROAS above 1.0x is not necessarily profitable. Profitability depends on margins, refunds, retention, payment fees, operating costs, and the period over which revenue is measured.
+A ROAS of 1.0x does not necessarily mean the campaign breaks even because revenue is not the same as contribution profit.
 
-Similarly, a campaign with low initial ROAS may need more time to mature if subscription revenue accumulates over time.
+The thresholds are intended to prioritise investigation rather than automatically switch campaigns on or off.
 
-### Why use multiple metrics?
+### 11.3 Why the strategy uses multiple metrics
 
-Optimising only for CPI may favour campaigns that acquire large numbers of low-intent users.
+Consider two hypothetical campaigns:
 
-Considering CPI alongside CAC, conversion, and attributed ROAS provides a more complete view of acquisition efficiency.
+- Campaign A generates many installs at a low CPI but has weak payer conversion.
+- Campaign B generates fewer installs at a higher CPI but converts a larger share of users into paying customers.
 
-The decision table is intended to help prioritise investigation, not to replace business judgement or causal evaluation.
+Optimising solely for CPI may favour Campaign A even when Campaign B has a lower CAC or stronger attributed revenue efficiency.
+
+A better decision workflow is:
+
+1. Compare spend and engagement.
+2. Evaluate install acquisition costs.
+3. Examine payer conversion and CAC.
+4. Compare attributed revenue and ROAS.
+5. Check attribution completeness.
+6. Review retention and experiment evidence where relevant.
+7. Determine whether the result justifies further testing, monitoring, or budget review.
+
+### 11.4 Decision outputs
+
+The campaign decision table includes campaign identifiers and performance measures alongside a recommendation label.
+
+The recommendation is a screening signal. It does not account for every business factor, such as contribution margin, lifetime value, market constraints, or diminishing returns.
+
+A production implementation should make the threshold configuration explicit and test the recommendation boundaries.
 
 ---
 
-## 11. Attribution Coverage
+## 12. Attribution Coverage and Reliability
 
-The attribution analysis compares the total user population with the users assigned to identifiable acquisition channels.
+Attribution coverage measures the proportion of users assigned to a recognised acquisition channel.
 
-The synthetic output reported:
+It is an important data-quality diagnostic because campaign performance comparisons depend on how completely users can be connected to acquisition sources.
+
+### 12.1 Formula
+
+\[
+\text{Attribution coverage}
+=\frac{\text{Attributed users}}{\text{Total users}}\times100
+\]
+
+The recorded synthetic run produced the following counts:
 
 | Attribution category | Users |
 |---|---:|
@@ -431,124 +774,109 @@ The synthetic output reported:
 | Apple Search Ads | 134,996 |
 | TikTok Ads | 120,039 |
 | Unattributed | 52,517 |
-| **Total** | **659,938** |
+| **Total users** | **659,938** |
 
-Attributed users totalled 607,421.
+The number of attributed users was 607,421.
 
-Overall attribution coverage is calculated as:
-
-\[
-\text{Coverage}=
-\frac{\text{Attributed users}}
-{\text{Total users}}\times100
-\]
-
-Using the generated results:
+Therefore:
 
 \[
-\text{Coverage}=
-\frac{607421}{659938}\times100
+\text{Coverage}
+=\frac{607,421}{659,938}\times100
 \approx92.04\%
 \]
 
-Therefore, approximately 92.04% of generated users were assigned to an acquisition channel, while approximately 7.96% were unattributed.
+The remaining approximately 7.96% of users were unattributed in this generated output.
 
-### Why this matters
+### 12.2 Why attribution coverage matters
 
 Incomplete attribution can affect:
 
-- Channel comparisons.
 - Campaign-level CAC.
 - Reported attributed revenue.
+- Channel comparisons.
 - Budget allocation decisions.
-- Confidence in marketing performance reporting.
+- The apparent distribution of acquisition sources.
 
-Coverage is a data-completeness measure. It does not tell us whether the attribution assignments are causally correct or whether one channel generated incremental growth.
+Coverage is a completeness measure, not a measure of causal accuracy.
+
+A dataset may have high attribution coverage and still assign users to channels incorrectly. A production analytics pipeline should therefore monitor both missing attribution and attribution validity.
 
 ---
 
-## 12. Cohort Retention Analysis
+## 13. Cohort Retention Analysis
 
-The cohort analysis groups users by acquisition month and channel, then examines their subsequent activity.
+Retention analysis measures whether users return after acquisition.
 
-The warehouse's `main.mart_cohort_retention` model contains:
+PulseGrowth groups users by acquisition month and channel, then evaluates activity at Day 1, Day 7, and Day 30.
 
-- `cohort_month`
-- `channel`
-- `cohort_users`
-- `d1_eligible_users`
-- `d1_retained_users`
-- `d7_eligible_users`
-- `d7_retained_users`
-- `d30_eligible_users`
-- `d30_retained_users`
-- `d1_retention_rate`
-- `d7_retention_rate`
-- `d30_retention_rate`
+### 13.1 Cohort definition
 
-### 12.1 Day 1 retention
+A cohort is a group of users sharing a defined acquisition period. In this project, users are grouped by acquisition month and channel.
+
+The `main.mart_cohort_retention` model contains cohort information, eligible-user counts, retained-user counts, and retention rates.
+
+### 13.2 Day 1 retention
 
 \[
-R_{D1}=
-\frac{\text{D1 retained users}}
-{\text{D1 eligible users}}\times100
+R_{D1}
+=\frac{\text{Day 1 retained users}}
+{\text{Day 1 eligible users}}\times100
 \]
 
-### 12.2 Day 7 retention
+### 13.3 Day 7 retention
 
 \[
-R_{D7}=
-\frac{\text{D7 retained users}}
-{\text{D7 eligible users}}\times100
+R_{D7}
+=\frac{\text{Day 7 retained users}}
+{\text{Day 7 eligible users}}\times100
 \]
 
-### 12.3 Day 30 retention
+### 13.4 Day 30 retention
 
 \[
-R_{D30}=
-\frac{\text{D30 retained users}}
-{\text{D30 eligible users}}\times100
+R_{D30}
+=\frac{\text{Day 30 retained users}}
+{\text{Day 30 eligible users}}\times100
 \]
 
-The denominator should include only users with sufficient observation time to reach the relevant retention milestone.
+The denominator must include only users who have had enough observation time to reach the relevant milestone.
 
-For example, a user who installed one day before the dataset cutoff cannot yet be evaluated for Day 30 retention.
+For example, someone who installed yesterday cannot yet be evaluated for Day 30 retention.
 
-### Weighted aggregation
+### 13.5 Weighted retention
 
-When combining channels or cohorts, overall retention should be calculated from the underlying retained and eligible counts:
+When combining cohorts, overall retention should be calculated from total retained and eligible users:
 
 \[
-R_{\text{overall}}=
-\frac{\sum_i \text{retained}_i}
+R_{\text{overall}}
+=\frac{\sum_i \text{retained}_i}
 {\sum_i \text{eligible}_i}\times100
 \]
 
-This is preferable to taking a simple average of percentages because cohorts can have different sizes.
+A simple average of cohort percentages can be misleading when cohort sizes differ substantially.
 
-### Interpretation
+### 13.6 Business interpretation
 
-The dashboard allows the user to compare retention across acquisition months and channels.
+Retention provides context that acquisition KPIs cannot supply on their own.
 
-A channel with strong acquisition metrics but weak retention may be attracting users who do not remain active. A channel with more modest install volume but stronger downstream retention may warrant further investigation.
+- High acquisition volume with weak retention may indicate low-quality acquisition.
+- Strong retention with a high acquisition cost may justify evaluating longer-term customer value.
+- Differences between channels may indicate differences in audience intent, product fit, or the generated data's underlying assumptions.
 
-### Retention maturity audit
+The dashboard also includes a retention-maturity diagnostic to highlight where observation windows need attention.
 
-The platform includes a diagnostic for checking cohort counts and eligibility.
-
-This matters because retention rates are only meaningful when users have had enough time to reach the relevant milestone. The generated dataset ends on 30 September 2026, so recent cohorts require particular attention.
-
-The dashboard's maturity diagnostic is a warning mechanism. It should not be treated as proof that a cohort calculation is wrong; the underlying SQL eligibility logic must be checked against individual install and event dates.
+Because the synthetic data ends on 30 September 2026, recent cohorts require particular care when interpreting Day 30 results.
 
 ---
 
-## 13. CRM Experimentation and Statistical Significance
+## 14. CRM Experimentation and Statistical Analysis
 
-The CRM experiment analysis compares conversion outcomes between treatment and control groups.
+The CRM experimentation workflow compares conversion outcomes between treatment and control groups.
 
-The generated dataset includes an experiment assignment, customer segment, and an indicator of whether the user converted within seven days.
+The central question is whether the observed conversion difference is large enough, relative to its uncertainty, to provide statistical evidence of an effect under the selected testing framework.
 
-### 13.1 Conversion rate
+### 14.1 Conversion rate
 
 For each experiment group:
 
@@ -561,30 +889,32 @@ where:
 - \(x\) is the number of conversions.
 - \(n\) is the number of assigned users.
 
-### 13.2 Absolute conversion lift
+The treatment and control conversion rates are denoted by \(p_T\) and \(p_C\).
+
+### 14.2 Absolute conversion lift
 
 \[
 \Delta=p_T-p_C
 \]
 
-where \(p_T\) is the treatment conversion rate and \(p_C\) is the control conversion rate.
+Absolute lift measures the difference between conversion rates. It is usually expressed in percentage points.
 
-Absolute lift is usually reported in percentage points.
+For example, an increase from 10% to 12% is an absolute lift of 2 percentage points.
 
-### 13.3 Relative conversion lift
+### 14.3 Relative conversion lift
 
 \[
-\text{Relative lift}=
-\frac{p_T-p_C}{p_C}\times100
+\text{Relative lift}
+=\frac{p_T-p_C}{p_C}\times100
 \]
 
-Relative lift expresses the difference relative to the control conversion rate. It should be interpreted alongside the absolute difference.
+Relative lift expresses the difference in relation to the control rate.
 
-### 13.4 Statistical significance
+It should be reported alongside absolute lift because a large relative increase can correspond to a small absolute change when the baseline conversion rate is low.
 
-The analysis evaluates whether the observed treatment-control difference is statistically distinguishable from zero.
+### 14.4 Hypothesis testing
 
-The significance level used by the analysis is:
+The project uses a significance level of:
 
 \[
 \alpha=0.05
@@ -600,19 +930,21 @@ H_0:p_T-p_C=0
 H_1:p_T-p_C\neq0
 \]
 
-If the p-value is below 0.05, the result is classified as statistically significant under this testing framework.
+The null hypothesis states that there is no difference in the population conversion rates. The alternative states that a difference exists.
 
-Statistical significance does not measure the size or business value of an effect. It also does not establish causality if experiment assignment, data quality, or the analysis assumptions are compromised.
+A p-value below 0.05 is classified as statistically significant under this framework.
 
-### 13.5 Confidence interval
+A p-value is not the probability that the null hypothesis is true, nor does statistical significance automatically imply business value.
 
-A 95% confidence interval describes the uncertainty around the estimated difference in conversion rates under the selected statistical method.
+### 14.5 Confidence interval
 
-An interval excluding zero is consistent with statistical significance for the corresponding two-sided test at the 5% level, subject to the assumptions of the method.
+A 95% confidence interval describes uncertainty around the estimated treatment-control difference under the selected method.
 
-### Results from the generated dataset
+An interval that excludes zero is consistent with statistical significance for the corresponding two-sided test at the 5% level, provided the assumptions and method are appropriate.
 
-The current synthetic output reported:
+### 14.6 Recorded synthetic results
+
+The recorded synthetic experiment output reported:
 
 | Metric | Control | Treatment |
 |---|---:|---:|
@@ -620,228 +952,416 @@ The current synthetic output reported:
 | Conversions | 18,211 | 23,218 |
 | Conversion rate | 9.20% | 11.73% |
 
-The reported absolute lift was approximately **+2.53 percentage points**, with relative lift of approximately **+27.57%**.
+The reported results were approximately:
 
-The reported 95% confidence interval for the absolute difference was approximately **+2.34 to +2.73 percentage points**. The p-value was reported as below the display precision of six decimal places.
+- **Absolute lift:** +2.53 percentage points.
+- **Relative lift:** +27.57%.
+- **95% confidence interval:** approximately +2.34 to +2.73 percentage points.
+- **P-value:** below the reported display precision of six decimal places.
 
-These results are intentionally generated by the synthetic experiment process. They demonstrate how the analysis works; they are not evidence of a real CRM campaign's effectiveness.
+These results demonstrate the workflow using generated data. They are not evidence that a real CRM campaign improved conversion.
 
-### Segment analysis
+### 14.7 Segment-level analysis
 
-The experiment script also reports outcomes for customer segments, including new, inactive, and trial users.
+The project also examines outcomes across customer segments, including new, inactive, and trial users.
 
-Segment-level findings should be interpreted with care because testing multiple segments increases the chance of false-positive results. A production implementation should predefine primary outcomes and consider multiple-comparison adjustments where appropriate.
+Segment-level comparisons can help generate hypotheses, but they also increase the risk of false-positive findings when many comparisons are performed.
+
+A production experiment programme should define primary outcomes in advance and consider multiple-comparison adjustments when testing many segments.
+
+### 14.8 Conditions for trustworthy experiments
+
+Statistical calculations alone cannot guarantee a valid experiment.
+
+A credible evaluation also depends on:
+
+1. Correct treatment and control assignment.
+2. Consistent outcome definitions.
+3. Appropriate observation windows.
+4. Independent or otherwise correctly modelled observations.
+5. Adequate sample size.
+6. Appropriate handling of missing outcomes and repeated users.
+7. Consideration of multiple testing where relevant.
+
+The quality of the experiment design is as important as the mathematical test.
 
 ---
 
-## 14. Budget Simulator
+## 15. Budget Simulator and Scenario Planning
 
-The Budget Simulator supports exploratory budget planning based on campaign performance.
+The Budget Simulator explores how different allocations could translate into projected outcomes under historical performance assumptions.
 
-A scenario simulator can help answer questions such as:
+The intention is to make the relationship between budget and expected outcomes transparent.
 
-- What happens if the budget allocation changes?
-- How much spend is assigned to each campaign?
-- What historical acquisition or revenue efficiency would imply under a proposed allocation?
-- Which assumptions have the greatest influence on the projection?
+### 15.1 Scenario formulation
 
-### Core scenario logic
+Let:
 
-For a simple spend allocation scenario, let:
+- \(B_i\) = proposed budget for campaign \(i\).
+- \(r_i\) = selected historical performance ratio for campaign \(i\).
+- \(\widehat{Y}_i\) = projected outcome for campaign \(i\).
 
-- \(B_i\) be the proposed budget for campaign \(i\).
-- \(r_i\) be the selected historical performance ratio for campaign \(i\).
-
-A basic projection can be expressed as:
+A basic scenario formula is:
 
 \[
 \widehat{Y}_i=B_i\times r_i
 \]
 
-For example, if the selected ratio is historical attributed revenue divided by historical spend, then:
+If the selected ratio is historical attributed ROAS:
 
 \[
-\widehat{R}_i=B_i\times
-\frac{R_i}{S_i}
+r_i=\frac{R_i}{S_i}
 \]
 
-This is a **historical-rate scenario**, not a forecast with guaranteed outcomes. The formula assumes the historical ratio remains stable as spend changes.
+then projected attributed revenue becomes:
 
-The exact calculations, constraints, and controls implemented in the current simulator should be documented against the final `app.py` code before describing the tool as an optimiser.
+\[
+\widehat{R}_i
+=B_i\times\frac{R_i}{S_i}
+\]
 
-### Important limitations
+### 15.2 Example
 
-Real campaigns may experience diminishing returns, audience saturation, changes in auction prices, seasonal effects, and interactions between channels.
+Suppose a campaign historically recorded €6,000 in attributed revenue from €10,000 in advertising spend.
 
-A more advanced budget optimiser would incorporate marginal performance curves, spend limits, uncertainty, and an explicit business objective.
+Its historical attributed ROAS is:
+
+\[
+r=\frac{6,000}{10,000}=0.60
+\]
+
+Under a scenario that allocates €2,000 to the campaign:
+
+\[
+\widehat{R}=2,000\times0.60=€1,200
+\]
+
+This is a mechanical projection under a constant historical-rate assumption. It is not a prediction that the campaign will actually generate €1,200.
+
+### 15.3 Strategic use
+
+A budget simulator can help a marketing team:
+
+- Compare alternative allocation scenarios.
+- Understand the implications of moving spend between campaigns.
+- Make historical performance assumptions explicit.
+- Identify where additional experimentation or analysis is required.
+- Discuss trade-offs between acquisition volume and attributed revenue efficiency.
+
+### 15.4 Limitations of historical-rate scenarios
+
+The formula assumes the selected historical performance ratio remains stable when spend changes.
+
+In practice, additional spending can lead to:
+
+- Audience saturation.
+- Diminishing returns.
+- Higher auction prices.
+- Changes in traffic quality.
+- Seasonal variation.
+- Creative fatigue.
+- Interactions between channels.
+- Changes in customer conversion and retention.
+
+A more advanced optimiser would model marginal returns, uncertainty, campaign-level constraints, and an explicit business objective.
+
+For these reasons, PulseGrowth treats the simulator as an exploratory planning tool rather than a fully validated budget optimiser.
 
 ---
 
-## 15. dbt Transformation and Testing
+## 16. dbt Transformation Strategy
 
-The project uses dbt Core with the DuckDB adapter to organise analytical transformations.
+dbt is used to organise SQL transformations into named, reusable models.
 
-The dbt project includes staging models such as:
+The project includes staging models and analytical marts.
+
+### 16.1 Staging models
+
+Staging models organise and standardise source data before it is used in downstream analytics.
+
+The project includes models such as:
 
 - `stg_ad_spend`
 - `stg_crm_experiments`
 - `stg_subscriptions`
 - `stg_users`
 
-It also includes analytical marts such as:
+The staging layer provides a place to define consistent field names, types, and basic transformations.
+
+### 16.2 Analytical marts
+
+The project includes analytical models such as:
 
 - `mart_campaign_performance`
 - `mart_crm_experiment_results`
 
-### Why dbt?
+These models expose metrics and aggregates that can be consumed by the dashboard and other analytical workflows.
 
-Using dbt makes the transformation layer easier to maintain by separating SQL logic into named, reusable models.
+### 16.3 Why dbt?
 
-It also supports:
+The transformation framework supports:
 
-- Declared sources.
-- Model-level data tests.
-- Documentation generation.
+- Reusable SQL logic.
+- Declared data sources.
+- Model-level testing.
 - Repeatable transformation runs.
-- More transparent lineage between source tables and analytical outputs.
+- More transparent data lineage.
+- Easier maintenance of business logic.
 
-### Example campaign mart logic
+### 16.4 Join-grain safeguards
 
-At a high level, campaign performance combines spend, user acquisition, subscription outcomes, and campaign metadata.
+Campaign performance combines data from advertising, user acquisition, subscriptions, and campaign metadata.
 
-Before aggregating these sources, each input should be reduced to an appropriate grain. Otherwise, joining daily spend to multiple user events or subscription transactions can duplicate values and inflate metrics.
+The sources have different grains, so they must be aggregated appropriately before joining.
 
-A robust transformation therefore needs to verify join keys, aggregation grain, attribution rules, and revenue definitions.
+Joining raw advertising records directly to multiple user events or subscription transactions can duplicate values and inflate results.
 
-The exact SQL should remain the source of truth for the production formulas; the formulas in this README describe the intended analytical definitions.
+The transformation strategy therefore needs to make join keys, aggregation grain, attribution rules, and revenue definitions explicit.
 
----
+### 16.5 Recorded dbt execution
 
-## 16. Automated Testing
+The recorded full dbt run reported:
 
-The project uses Pytest to validate important analytical behaviour.
+- 6 models.
+- 17 tests.
+- 7 sources.
+- 6 out of 6 models completed successfully.
+- 17 out of 17 tests passed.
 
-The latest reported full test run completed with:
-
-**15 tests passed.**
-
-The reported test groups include:
-
-- Data-related tests.
-- CRM experiment analysis tests.
-- Campaign decision-table tests.
-
-The synthetic-data validation script also reported 27 successful data-quality checks.
-
-### What these tests demonstrate
-
-Automated tests help protect against regressions in calculations, expected data behaviour, and recommendation logic.
-
-Passing tests do not automatically guarantee that all business definitions are correct. Analytical validation should also compare outputs with independently calculated values and check the assumptions behind each metric.
+These are results from the recorded development run, not a claim that every future run will produce the same output.
 
 ---
 
-## 17. How to Run the Project
+## 17. Testing and Analytical Quality Assurance
+
+PulseGrowth uses automated checks at different stages of the analytical workflow.
+
+### 17.1 Data validation
+
+The synthetic-data validation script reported **27 out of 27 checks passing** in the recorded run.
+
+### 17.2 dbt tests
+
+The recorded dbt test run completed with **17 out of 17 tests passing**.
+
+### 17.3 Pytest
+
+The recorded project test run reported **15 tests passing**.
+
+The test groups documented in the project include data-related behaviour, CRM experiment analysis, and campaign decision-table logic.
+
+### 17.4 Why multiple testing layers?
+
+Each layer tests a different part of the system.
+
+| Layer | Purpose |
+|---|---|
+| Data validation | Check the generated source data |
+| dbt tests | Check transformed models and declared rules |
+| Python unit tests | Protect important analytical calculations |
+| Dashboard validation | Confirm that the application loads and displays the required marts |
+
+Passing tests do not guarantee that every business definition is correct. Analytical validation should also compare results against independently calculated values and verify the assumptions behind the metrics.
+
+---
+
+## 18. Deployment and Performance Strategy
+
+The project separates the full development warehouse from the database required to serve the dashboard.
+
+This was an important practical decision during deployment.
+
+### 18.1 Why the full warehouse was not used directly
+
+The full DuckDB warehouse reached approximately **105.26 MB** and contained millions of user and event rows.
+
+The dashboard's data-loading code did not query all of these raw records directly. Instead, it consumed a small number of analytical marts.
+
+Uploading and loading the full warehouse would therefore increase deployment size without providing a direct benefit to the current dashboard queries.
+
+### 18.2 Compact deployment database
+
+A separate database, `pulsegrowth_deploy.duckdb`, was created to retain the dashboard's required tables:
+
+| Schema | Table | Recorded row count |
+|---|---|---:|
+| `analytics` | `mart_campaign_performance` | 16 |
+| `analytics` | `mart_crm_experiment_results` | 8 |
+| `main` | `mart_cohort_retention` | 30 |
+| `main` | `mart_daily_campaign_performance` | 2,880 |
+| `main` | `fct_geo_experiments` | 720 |
+
+The five tables contain 3,654 rows in total.
+
+The compact database was created from the full warehouse, preserving the schema and table names expected by the dashboard. The original full database remains useful for local development and pipeline rebuilding.
+
+### 18.3 Deployment database selection
+
+The Streamlit application is configured to load:
+
+```python
+DB_PATH = ROOT / "data" / "processed" / "pulsegrowth_deploy.duckdb"
+```
+
+The campaign decision table is stored separately:
+
+```text
+data/processed/campaign_decision_table.csv
+```
+
+Keeping these paths explicit makes the runtime dependency clear.
+
+### 18.4 Version control strategy
+
+The project excludes large generated datasets and local development artifacts from normal Git tracking. Only the compact deployment database and required decision table are deliberately included in the deployment commit.
+
+This keeps the deployed application independent of the full raw data files while preserving the source code and the data needed to serve the current dashboard.
+
+### 18.5 Deployment verification
+
+After updating the application, the deployment should be checked for:
+
+- Successful database loading.
+- Correct schema and table availability.
+- Successful rendering of all five workspaces.
+- Correct loading of the campaign decision table.
+- Absence of warehouse-not-found errors.
+- Consistency between the deployed code and the latest GitHub commit.
+
+The live application is available here:
+
+**[Open PulseGrowth](https://pulsegrowth-marketing-intelligence-lrfpd5xacjdrrymdqzkqg9.streamlit.app/)**
+
+---
+
+## 19. End-to-End Setup Instructions
+
+The instructions below describe how to set up the project locally using Windows PowerShell.
 
 ### Prerequisites
 
 - Python 3.12.
 - Git.
-- A Windows PowerShell terminal or a compatible shell.
-- The project dependency files.
-
-The following commands assume the repository uses the `.venv` virtual environment and that the relevant scripts are available at the documented paths.
+- PowerShell or another compatible shell.
+- Internet access for dependency installation.
 
 ### Step 1 — Clone the repository
 
 ```powershell
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd pulsegrowth-marketing-intelligence
+git clone https://github.com/souravgupta166/Pulsegrowth-Marketing-Intelligence.git
+
+cd Pulsegrowth-Marketing-Intelligence
 ```
 
-Replace the placeholder with the actual repository URL.
-
-### Step 2 — Create and activate a virtual environment
+### Step 2 — Create a virtual environment
 
 ```powershell
 py -3.12 -m venv .venv
+
 .\.venv\Scripts\Activate.ps1
 ```
 
 ### Step 3 — Install dependencies
 
-If the repository includes a `requirements.txt` file:
-
 ```powershell
 python -m pip install --upgrade pip
+
 pip install -r requirements.txt
 ```
 
-If dependencies are managed differently, follow the repository's actual dependency configuration.
-
-### Step 4 — Generate synthetic data
+### Step 4 — Generate the synthetic source data
 
 ```powershell
 python src/ingestion/generate_data.py
 ```
 
-This should generate the source CSV files used by the analytical pipeline.
+This generates the source CSV datasets used by the pipeline.
 
-### Step 5 — Validate the data
+### Step 5 — Validate the generated data
 
 ```powershell
 python src/ingestion/validate_data.py
 ```
 
-Review the output and resolve validation failures before continuing.
+Review the output and resolve validation failures before proceeding.
 
-### Step 6 — Build the warehouse
+### Step 6 — Build the DuckDB warehouse
 
-Run the repository's warehouse build or data-loading workflow to populate the DuckDB database and required analytical tables.
+```powershell
+python src/analytics/build_warehouse.py
+```
 
-The exact command depends on the current implementation; document the actual command from the project scripts before publishing this section.
+This builds the local analytical warehouse from the generated synthetic data.
 
 ### Step 7 — Run dbt transformations
 
-From the directory containing the dbt project configuration:
+From the repository root, use the project-specific paths:
 
 ```powershell
-dbt debug
-dbt run
-dbt test
+.\.venv\Scripts\dbt.exe run --project-dir dbt_project --profiles-dir dbt_project
 ```
 
-If the dbt project is in a subdirectory, first navigate to that directory or specify it with the appropriate `--project-dir` and profile options.
+### Step 8 — Run dbt tests
 
-### Step 8 — Run automated tests
+```powershell
+.\.venv\Scripts\dbt.exe test --project-dir dbt_project --profiles-dir dbt_project
+```
+
+Review the output to confirm the models and tests completed successfully.
+
+### Step 9 — Build the campaign decision table
+
+```powershell
+python src/analytics/build_campaign_decision_table.py
+```
+
+This creates the campaign-level decision output consumed by the application.
+
+### Step 10 — Run the Python test suite
 
 ```powershell
 python -m pytest -v
 ```
 
-### Step 9 — Launch the dashboard
-
-From the repository root:
+### Step 11 — Launch the dashboard
 
 ```powershell
 python -m streamlit run app.py
 ```
 
-Streamlit will provide a local URL for the dashboard.
+Streamlit will display a local URL where the dashboard can be accessed.
 
-**Reproducibility note:** The repository README should list the exact command sequence needed to build the database from a fresh clone. A pre-existing local DuckDB file should not be a hidden prerequisite.
+### Reproducibility note
+
+The full local pipeline generates the source data, builds the warehouse, runs dbt transformations, and produces the decision table.
+
+The compact deployment database is a runtime artifact designed for the hosted dashboard. It should not be confused with the full warehouse used to rebuild and validate the analytical workflow.
 
 ---
 
-## 18. Project Structure
+## 20. Project Structure
 
-The following is a conceptual layout based on the project components. Verify the actual file tree before publishing it as an exact directory listing.
+The principal project files are organised as follows.
 
 ```text
-pulsegrowth-marketing-intelligence/
+Pulsegrowth-Marketing-Intelligence/
 │
 ├── app.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── data/
+│   ├── raw/
+│   ├── synthetic/
+│   └── processed/
+│       ├── campaign_decision_table.csv
+│       ├── pulsegrowth.duckdb
+│       └── pulsegrowth_deploy.duckdb
+│
 ├── dbt_project/
+│   ├── dbt_project.yml
+│   ├── profiles.yml
 │   └── models/
 │       ├── staging/
 │       └── marts/
@@ -852,119 +1372,275 @@ pulsegrowth-marketing-intelligence/
 │   │   └── validate_data.py
 │   │
 │   └── analytics/
+│       ├── build_warehouse.py
+│       ├── build_campaign_decision_table.py
 │       ├── analyze_crm_experiment.py
-│       ├── attribution_coverage.py
-│       └── build_campaign_decision_table.py
-│
-├── data/
-│   ├── raw/
-│   └── processed/
+│       └── attribution_coverage.py
 │
 ├── tests/
-│   ├── test_data.py
-│   ├── test_crm_experiment.py
-│   └── test_campaign_decision_table.py
 │
-├── .gitignore
-├── requirements.txt
-└── README.md
+└── docs/
 ```
 
-Generated databases and large datasets may be excluded from version control when they can be reproducibly rebuilt. The README should explain how to recreate them.
+This is a conceptual overview of the principal components. Individual files and subdirectories may evolve as the project develops.
+
+The full warehouse and compact deployment database serve different purposes:
+
+- `pulsegrowth.duckdb`: full local analytical warehouse.
+- `pulsegrowth_deploy.duckdb`: compact database used by the deployed dashboard.
+- `campaign_decision_table.csv`: campaign-level decision output.
 
 ---
 
-## 19. Key Analytical Findings
+## 21. Key Findings from the Synthetic Dataset
 
-The current synthetic run demonstrates several useful analytical patterns.
+The recorded analytical run demonstrates several patterns worth investigating in a marketing analytics workflow.
 
-### Attribution completeness
+### 21.1 Attribution completeness
 
-The attribution workflow reported approximately **92.04% coverage**, with 52,517 users remaining unattributed.
+The generated dataset reported approximately **92.04% attribution coverage**, with 52,517 users remaining unattributed.
 
-This demonstrates why attribution completeness should be checked before relying on channel comparisons.
+This demonstrates why attribution coverage should be examined before relying on channel-level comparisons.
 
-### Campaign efficiency
+### 21.2 Campaign efficiency differences
 
-The synthetic campaign decision table showed differences in attributed ROAS and acquisition costs across channels. Apple Search Ads campaigns had higher attributed ROAS in the current generated output than the other represented channels.
+In the recorded campaign decision output, Apple Search Ads campaigns had higher attributed ROAS than the other represented channels.
 
-This is a result of the generated data and modelling assumptions, not a real-world channel benchmark.
+The synthetic results are useful for demonstrating campaign comparisons, but they should not be treated as evidence that Apple Search Ads is inherently more effective in real marketing environments.
 
-### CRM experiment
+### 21.3 CRM conversion lift
 
-The synthetic treatment group showed a higher seven-day conversion rate than the control group. The analysis reports absolute lift, relative lift, a confidence interval, and statistical significance.
+The generated treatment group recorded a higher seven-day conversion rate than the control group:
 
-### Cohort retention
+- Control: 9.20%.
+- Treatment: 11.73%.
+- Reported absolute lift: approximately +2.53 percentage points.
 
-The retention dashboard compares Day 1, Day 7, and Day 30 outcomes across cohorts and channels. It also highlights the importance of checking observation maturity before interpreting retention rates.
+The experiment analysis demonstrates how conversion differences, confidence intervals, and significance can be evaluated. The result is generated, not a real campaign outcome.
 
-### Overall learning
+### 21.4 Retention and cohort maturity
 
-The project illustrates that acquisition efficiency, attributed revenue, retention, attribution completeness, and experimentation provide different kinds of evidence.
+The retention workflow demonstrates why Day 1, Day 7, and Day 30 metrics must use eligible-user denominators.
 
-A strong marketing decision should consider these signals together rather than treating any single KPI as sufficient.
+Recent acquisition cohorts need sufficient observation time before their retention outcomes can be compared fairly with older cohorts.
+
+### 21.5 The broader analytical lesson
+
+Acquisition, attribution, revenue, retention, and experimentation answer different questions.
+
+- Acquisition metrics describe cost and volume.
+- Attribution connects recorded outcomes to campaigns.
+- Retention describes subsequent user behaviour.
+- Experiments evaluate treatment-control differences under a defined design.
+- Budget scenarios explore implications under explicit assumptions.
+
+A sound marketing decision considers these signals together rather than treating a single KPI as sufficient.
 
 ---
 
-## 20. Limitations and Responsible Interpretation
+## 22. Business Recommendations and Decision Framework
 
-PulseGrowth is a demonstration project, and several limitations are important.
+The analytical framework suggests a structured way to turn marketing data into action.
+
+### Recommendation 1 — Avoid optimising only for installs
+
+Use CPI as an acquisition-efficiency measure, but evaluate it alongside payer conversion and CAC.
+
+**Reason:** Cheap installs do not necessarily become paying customers.
+
+### Recommendation 2 — Treat ROAS as an investigation signal
+
+Use attributed ROAS to compare campaigns, but consider revenue timing, contribution margins, refunds, retention, and attribution assumptions before deciding whether a campaign is profitable.
+
+**Reason:** Attributed revenue is not the same as incremental profit.
+
+### Recommendation 3 — Include retention in channel evaluation
+
+Compare Day 1, Day 7, and Day 30 retention alongside acquisition costs.
+
+**Reason:** A campaign that acquires users efficiently but loses them quickly may have weaker long-term economics than its initial metrics suggest.
+
+### Recommendation 4 — Use experiments for causal questions
+
+When the question is whether a CRM intervention improves conversion, use a well-designed treatment-control experiment rather than relying exclusively on campaign attribution.
+
+**Reason:** Descriptive associations and causal effects are different types of evidence.
+
+### Recommendation 5 — Use budget scenarios cautiously
+
+Explore alternative allocations using historical performance, then validate important assumptions with additional data or experiments.
+
+**Reason:** Historical performance may not remain constant as spend changes.
+
+### Recommendation 6 — Make data quality visible
+
+Track attribution completeness, denominator eligibility, model tests, and source-to-mart consistency.
+
+**Reason:** An apparently strong KPI is only as reliable as the data and definitions behind it.
+
+### Recommended decision sequence
+
+```text
+1. Validate data quality
+          |
+          v
+2. Check attribution completeness
+          |
+          v
+3. Compare acquisition and conversion
+          |
+          v
+4. Review attributed revenue and ROAS
+          |
+          v
+5. Examine retention and experiment evidence
+          |
+          v
+6. Explore budget scenarios
+          |
+          v
+7. Make a decision with explicit assumptions
+          |
+          v
+8. Monitor the next observed outcome
+```
+
+This sequence is a decision framework, not an automatic optimisation algorithm.
+
+---
+
+## 23. Limitations and Responsible Interpretation
+
+PulseGrowth is an educational portfolio project. Its outputs need to be interpreted within the limits of its data and modelling assumptions.
 
 ### Synthetic data
 
-The data were generated programmatically. They do not represent real users, real advertising accounts, or verified company performance.
+The generated datasets do not represent real users, advertising accounts, customers, or company performance.
+
+The results demonstrate the analytical workflow, not verified commercial outcomes.
 
 ### Attribution is not causality
 
-Attributed revenue and attributed ROAS measure results under the chosen attribution logic. They do not establish incremental revenue generated by advertising.
+Campaign attribution assigns recorded outcomes according to a selected rule. It does not prove that advertising generated incremental revenue.
 
-### Historical performance is not a forecast
+### Historical performance is not a guaranteed forecast
 
-Campaign efficiency can change as budgets, audiences, competition, creative assets, and market conditions change.
+Campaign performance can change as spending, audiences, creative assets, competition, and market conditions change.
 
 ### CAC is narrowly defined
 
-The campaign-level CAC calculation uses advertising spend divided by attributed paying customers. It does not include every cost that may be relevant to fully loaded acquisition economics.
+The project-level CAC calculation uses advertising spend divided by attributed paying customers. It does not necessarily include all costs required for a fully loaded acquisition measure.
 
-### Retention requires maturity checks
+### Retention requires appropriate observation windows
 
-Users need enough elapsed time to become eligible for Day 1, Day 7, or Day 30 measurements. Eligibility must be based on individual observation windows, not assumed from the cohort label alone.
+Users must have enough elapsed time to become eligible for Day 1, Day 7, or Day 30 retention measurements.
 
-### Experiments depend on design quality
+### Statistical significance is not business significance
 
-Statistical significance is meaningful only when the assignment mechanism, outcome definitions, observation windows, and test assumptions are appropriate.
+A statistically significant difference may be too small to matter commercially. A non-significant result does not automatically establish that the treatment has no effect.
 
-### Geographic experiment data
+### Experiment quality depends on design
 
-The geographic experiment dataset is illustrative. It should not be presented as a validated causal analysis unless the design, treatment assignment, comparison period, and estimation method are explicitly implemented and checked.
+Valid interpretation depends on assignment, outcome definitions, observation windows, assumptions, and the selected statistical method.
 
----
+### Geographic experiment data are illustrative
 
-## 21. Future Improvements
+The presence of geographic observations does not, by itself, establish a valid causal experiment.
 
-Potential next steps include:
+### Budget scenarios depend on assumptions
 
-1. **Incrementality measurement:** Add a carefully validated geographic or user-level causal analysis.
-2. **Lifetime value:** Estimate customer lifetime value using subscription history and explicit assumptions.
-3. **Budget optimisation:** Model diminishing returns and optimise allocations under campaign-level constraints.
-4. **Attribution diagnostics:** Add checks for missing identifiers, unattributed users, and conflicting channel assignments.
-5. **Retention maturity:** Validate eligibility at the individual-user level and test boundary dates.
-6. **Data contracts:** Add stronger schema, uniqueness, referential-integrity, and reconciliation tests.
-7. **Metric governance:** Standardise KPI definitions across the Python, SQL, dbt, and dashboard layers.
-8. **Deployment:** Document a clean, reproducible deployment process and keep generated secrets and local data out of version control.
-9. **Monitoring:** Add checks for unexpected changes in data volumes, campaign metrics, and pipeline execution.
-10. **Visual storytelling:** Include a small number of annotated charts that connect findings to specific business decisions.
+Historical-rate scenarios do not model every real-world constraint, such as diminishing returns, audience saturation, or changes in marginal acquisition costs.
+
+### Deployment and reproducibility
+
+The compact database is intended to serve the current dashboard. The full analytical workflow remains the source for rebuilding the warehouse and validating transformations.
 
 ---
 
-## 22. Author
+## 24. Future Roadmap
 
-Built as a hands-on portfolio project to demonstrate practical skills in marketing analytics, data engineering, SQL, experimentation, KPI design, and interactive business intelligence.
+PulseGrowth provides a foundation for further analytical and engineering improvements.
 
-**GitHub:** <https://github.com/souravgupta166>
+### 24.1 Incrementality measurement
 
-**LinkedIn:** <https://www.linkedin.com/in/sourav-gupta-7539a9217/?>
+Implement and validate a user-level or geographic causal analysis with an explicit treatment design, comparison strategy, and estimation method.
+
+### 24.2 Customer lifetime value
+
+Estimate customer lifetime value using subscription history and clearly documented assumptions about retention, revenue, and costs.
+
+### 24.3 Advanced budget optimisation
+
+Develop marginal response curves, diminishing-return assumptions, campaign-level constraints, and an explicit optimisation objective.
+
+### 24.4 Attribution diagnostics
+
+Add more detailed checks for missing identifiers, conflicting assignments, and differences between attributed and unattributed populations.
+
+### 24.5 Retention maturity
+
+Validate retention eligibility at the individual-user level and add boundary-date tests for each retention milestone.
+
+### 24.6 Metric governance
+
+Standardise KPI definitions across Python scripts, SQL models, dbt transformations, and dashboard outputs.
+
+### 24.7 Stronger data contracts
+
+Introduce more explicit schema, uniqueness, referential-integrity, and source-to-mart reconciliation tests.
+
+### 24.8 Experiment quality
+
+Add sample-size planning, predefined primary outcomes, and appropriate multiple-comparison handling for segment analysis.
+
+### 24.9 Monitoring
+
+Track data-volume changes, pipeline failures, missing values, and unexpected KPI shifts.
+
+### 24.10 Decision traceability
+
+Record which metrics, assumptions, thresholds, and constraints contributed to each campaign recommendation or budget scenario.
+
+These improvements would move the project towards a more robust marketing decision-support system.
 
 ---
 
-*PulseGrowth is an educational portfolio project. All reported business results are derived from synthetic data and should not be interpreted as real commercial outcomes.*
+## 25. Skills Demonstrated
+
+PulseGrowth demonstrates an integrated set of business analytics, data engineering, statistical analysis, and application development skills.
+
+| Area | Skills demonstrated |
+|---|---|
+| Business analysis | KPI definition, campaign evaluation, decision frameworks, strategic interpretation |
+| SQL | Joins, aggregations, data modelling, analytical transformations |
+| Python | Data generation, data processing, validation, analytical scripts |
+| DuckDB | Analytical warehouse design and querying |
+| dbt | Staging models, marts, reusable SQL, transformation tests |
+| Marketing analytics | CTR, CPC, CPI, CAC, conversion rates, attributed ROAS |
+| Product analytics | Cohort analysis, retention, user activity |
+| Experimentation | Treatment-control comparisons, conversion lift, confidence intervals, hypothesis testing |
+| Data quality | Validation rules, denominator checks, aggregation-grain awareness |
+| Dashboard development | Streamlit application, analytical visualisation, decision-oriented presentation |
+| Testing | Pytest, dbt tests, validation workflows |
+| Deployment | Git, GitHub, compact deployment artifacts, Streamlit Community Cloud |
+
+The central learning from this project is that useful analytics requires more than calculating metrics. It requires defining the business question, validating the underlying data, choosing the right denominator, understanding uncertainty, and communicating what the result does—and does not—justify.
+
+---
+
+## 26. Author
+
+**Sourav Gupta**
+
+GitHub: [github.com/souravgupta166](https://github.com/souravgupta166)
+
+LinkedIn: [linkedin.com/in/sourav-gupta-7539a9217](https://www.linkedin.com/in/sourav-gupta-7539a9217/)
+
+### Project links
+
+- **Live dashboard:** [PulseGrowth — Marketing Intelligence](https://pulsegrowth-marketing-intelligence-lrfpd5xacjdrrymdqzkqg9.streamlit.app/)
+- **Source code:** [GitHub repository](https://github.com/souravgupta166/Pulsegrowth-Marketing-Intelligence)
+
+---
+
+*PulseGrowth is an educational portfolio project. All reported business results are generated from synthetic data and should not be interpreted as real commercial outcomes.*
