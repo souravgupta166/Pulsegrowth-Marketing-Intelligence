@@ -14,7 +14,7 @@ import streamlit as st
 # ============================================================
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = ROOT / "data" / "processed" / "pulsegrowth.duckdb"
+DB_PATH = ROOT / "data" / "processed" / "pulsegrowth_deploy.duckdb"
 DECISION_PATH = ROOT / "data" / "processed" / "campaign_decision_table.csv"
 
 NAVY = "#101522"
